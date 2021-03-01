@@ -45,27 +45,24 @@ class FromJson2Db extends Command
 
         foreach ($users['users'] as $user) {
             $newUser = new User(array(
-                'test_id' => $user['id'],
+                'id' => $user['id'],
                 'name' => $user['name'],
                 'age' => (int)$user['age']
             ));
 
             $newUser->save();
 
-
             foreach ($user['companies'] as $company) {
-                $comp = Company::where('test_id', $company['id'])->first();
+                $comp = Company::find($company['id']);
                 if (!$comp) {
                     $newCompany = new Company(array(
-                        'test_id' => $company['id'],
+                        'id' => $company['id'],
                         'name' => $company['name'],
                         'started_at' => Carbon::parse($company['started_at'])
                     ));
                     $newCompany->save();
-                    $newCompany->refresh();
-                    $comp = $newCompany;
                 }
-                User::where('test_id', $user['id'])->first()->companies()->attach($comp);
+                User::find($user['id'])->companies()->attach($company['id']);
             }
         }
 

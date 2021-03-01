@@ -11,6 +11,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    public $incrementing = false;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -19,7 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'age',
-        'test_id',
+        'id',
     ];
 
     public function companies()

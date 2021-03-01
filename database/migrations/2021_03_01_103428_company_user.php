@@ -16,7 +16,10 @@ class CompanyUser extends Migration
         Schema::create('company_user', function (Blueprint $table) {
             $table->id();
             $table->string('company_id', 90);
+            $table->foreign('company_id')->references('id')->on('companies');
+
             $table->string('user_id', 90);
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CompanyUser extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('company_user');
     }
 }

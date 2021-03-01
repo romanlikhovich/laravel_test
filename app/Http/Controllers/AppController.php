@@ -16,7 +16,7 @@ class AppController extends Controller
             $result = array();
             foreach ($companies as $company) {
                 $res = array(
-                    'id' => $company->test_id,
+                    'id' => $company->id,
                     'name' => $company->name,
                     'started_at' => $company->started_at,
                     'age' => Carbon::parse($company->started_at)->age,
@@ -34,7 +34,7 @@ class AppController extends Controller
                 }
                 foreach ($users as $user) {
                     $u = array(
-                        'id' => $user->test_id,
+                        'id' => $user->id,
                         'name' => $user->name,
                         'age' => $user->age
                     );

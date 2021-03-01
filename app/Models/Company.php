@@ -9,11 +9,12 @@ class Company extends Model
 {
     use HasFactory;
     protected $table = 'companies';
+    public $incrementing = false;
 
     protected $fillable = [
         'name',
         'started_at',
-        'test_id',
+        'id',
     ];
 
     public function users()
