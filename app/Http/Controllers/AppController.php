@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -18,6 +19,7 @@ class AppController extends Controller
                     'id' => $company->test_id,
                     'name' => $company->name,
                     'started_at' => $company->started_at,
+                    'age' => Carbon::parse($company->started_at)->age,
                     'users' => array(),
                 );
                 $users = null;
