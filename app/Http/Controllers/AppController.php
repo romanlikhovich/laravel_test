@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\User;
 
 class AppController extends Controller
 {
-    public function index(Request $request, $start = null, $end = null)
+    public function index(Request $request, $start = 0, $end = 200)
     {
         try {
             $companies = Company::all();
@@ -22,26 +21,23 @@ class AppController extends Controller
                     'age' => Carbon::parse($company->started_at)->age,
                     'users' => array(),
                 );
-                $users = null;
-                if (is_null($start) && is_null($end)) {
-                    $users = $company->users()->get();
-                } else if (!is_null($start) && is_null($end)) {
-                    $users = $company->users()->where('age', '>=', $start)->get();
-                } else if (is_null($start) && !is_null($end)) {
-                    $users = $company->users()->where('age', '<=', $end)->get();
-                } else {
-                    $users = $company->users()->where('age', '>=', $start)->where('age', '<=', $end)->get();
-                }
+
+                $users = $company->users()
+                    ->where('age', '>=', $start)
+                    ->where('age', '<=', $end)
+                    ->get();
+
                 foreach ($users as $user) {
-                    $u = array(
+                    array_push($res['users'], array(
                         'id' => $user->id,
                         'name' => $user->name,
                         'age' => $user->age
-                    );
-                    array_push($res['users'], $u);
+                    ));
 
                 }
-                array_push($result, $res);
+                if (count($users)) {
+                    array_push($result, $res);
+                }
             }
             return response()->json(array('status' => 'ok', 'code' => 200, 'companies' => $result), 200);
         } catch (\Exception $error) {

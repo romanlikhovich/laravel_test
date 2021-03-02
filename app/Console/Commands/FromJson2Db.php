@@ -42,28 +42,32 @@ class FromJson2Db extends Command
     {
         echo "Start putting the data to the DB" . PHP_EOL;
         $users = json_decode(file_get_contents('data.json'), true);
-
+        $companies = array();
         foreach ($users['users'] as $user) {
+            $user_companies = array();
             $newUser = new User(array(
                 'id' => $user['id'],
                 'name' => $user['name'],
                 'age' => (int)$user['age']
             ));
 
-            $newUser->save();
-
             foreach ($user['companies'] as $company) {
-                $comp = Company::find($company['id']);
+                $comp = key_exists($company['id'], $companies);
                 if (!$comp) {
                     $newCompany = new Company(array(
                         'id' => $company['id'],
                         'name' => $company['name'],
                         'started_at' => Carbon::parse($company['started_at'])
                     ));
-                    $newCompany->save();
+                    $companies[$company['id']] = $newCompany;
                 }
-                User::find($user['id'])->companies()->attach($company['id']);
+
+                array_push($user_companies, $companies[$company['id']]);
             }
+
+
+            $newUser->save();
+            $newUser->companies()->saveMany($user_companies);
         }
 
         echo "End putting the data to the DB" . PHP_EOL;
